@@ -1,0 +1,40 @@
+KMeans can be seen as a special case of Gaussian mixture model with equal covariance per component.
+算法通过把样本分离成 n 个具有相同方差的类的方式来对数据进行聚类
+The KMeans algorithm clusters data by trying to separate samples in n groups of equal variance, minimizing a criterion known as the inertia or within-cluster sum-of-squares
+
+The K-means algorithm aims to choose centroids that minimise the inertia, or within-cluster sum-of-squares criterion:
+假设簇是凸的，各项同性的，但并不总是这样。它对细长的簇或具有不规则形状的流形反应很差。
+Inertia makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.
+
+kmeans用分的，迭代次数少
+通用, 均匀的 cluster size（簇大小）, flat geometry（平面几何）, 不是太多的 clusters（簇）
+初始化不同质心的计算通常会进行几次。帮助解决这个问题的一种方法是 k-means++ 初始化方案，它已经在 scikit-learn 中实现（使用 init='k-means++' 参数）。 这将初始化质心（通常）彼此远离，相对随机初始化得到更好的结果，如参考文献所示。
+
+GMM 混合一起的，有很多的重叠
+平面几何，适用于密度估计
+A Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. One can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians.
+
+
+When one has insufficiently many points per mixture, estimating the covariance matrices becomes difficult, and the algorithm is known to diverge and find solutions with infinite likelihood unless one regularizes the covariances artificially.
+
+
+
+
+DBSCAN
+非平面几何，不均匀的簇大小
+The DBSCAN algorithm views clusters as areas of high density separated by areas of low density. Due to this rather generic view, clusters found by DBSCAN can be any shape, as opposed to k-means which assumes that clusters are convex shaped. 
+该DBSCAN算法将簇视为低密度区域将高密度区域分隔开。由于这种相当通用的观点，DBSCAN发现的簇可以是任何形状，而k-均值假定簇是凸形的。该算法有两个参数， min_samples和eps，它们正式定义了我们说稠密 （dense）时的含义。更高的min_samples或更低的eps 都表示形成簇所需的更高密度。
+
+可以看出，如果MinPts不变，Eps取得值过大，会导致大多数点都聚到同一个簇中，Eps过小，会导致一个簇的分裂；如果Eps不变，MinPts的值取得过大，会导致同一个簇中点被标记为噪声点，MinPts过小，会导致发现大量的核心点。 
+
+
+
+很多簇，可能连接限制，非欧氏距离）
+使用自下而上的方法执行层次聚类：每个观察都从其自己的聚类开始，并且聚类连续合并在一起。连接标准确定用于合并策略的度量标准
+Ward最小化了所有群集内的平方差总和。这是方差最小化的优化方法，从这个意义上讲，它类似于k均值目标函数的优化方法，但采用了凝聚分层的方法。
+Maximum 或 complete linkage 最小化成对聚类间最远样本的距离。
+Average linkage 最小化成对聚类间平均样本的距离值。
+Single linkage 最小化成对聚类间最近样本的距离值。
+Agglomerative cluster 存在 “rich get richer” 现象，导致聚类大小不均匀。在这方面，Single linkage 是最差的策略，而Ward给出的规则大小最大。但是， affinity （或聚类中使用的距离）不能随Ward一起变化，因此对于非欧氏度量，average linkage 是一个很好的选择。average linkage虽然对嘈杂的数据的鲁棒性并不强，但是对规模较大的数据集提供了非常有效的层次聚类算法。 
+
+Single linkage 同样对非全局数据有很好的效果，比如dataset4,dataseth5中的圆形和波浪形
